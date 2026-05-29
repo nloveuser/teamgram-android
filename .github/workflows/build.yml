@@ -25,13 +25,19 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install NDK
+      - name: Install NDK and SDK components
         run: |
           echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager \
             "ndk;21.4.7075529" \
-            "cmake;3.10.2" \
             "build-tools;33.0.0" \
             "platforms;android-33"
+
+      - name: Install CMake via apt
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y cmake
+          # cmake;3.10.2 is no longer available in Google SDK repo — use system cmake
+          echo "cmake.dir=/usr" >> local.properties
 
       - name: Cache Gradle packages
         uses: actions/cache@v4
